@@ -1,0 +1,109 @@
+﻿<Window x:Class="wpf_app.window.PhpCreateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="PHP Create" Height="800" Width="1000" Loaded="InitDataAsync">
+    <StackPanel Orientation="Vertical">
+
+        <StackPanel Orientation="Horizontal">
+            <Label Content="Web App Name" />
+            <TextBox x:Name="WebAppName" Width="229" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Content="Host Name" />
+            <TextBox x:Name="HostName" Width="253" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Content="Resource Group Name" />
+            <TextBox x:Name="ResourceGroupName" Width="193" />
+            <ComboBox x:Name="ResourceGroups" Width="237" SelectionChanged="ResourceGroupName_OnSelectionChanged" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Content="PHP Version" />
+            <ComboBox x:Name="PhpVersions" Width="247" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Content="Filesystem" FontWeight="Bold" />
+            <RadioButton Name="FilesystemAppServiceStorage" GroupName="Filesystem" IsChecked="True" VerticalAlignment="Center">App Service Storage</RadioButton>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical">
+            <Label FontWeight="Bold">PHP Settings:</Label>
+
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Max Execution Time (in sec)" />
+                <TextBox x:Name="PhpMaxExecutionTimeSec" Width="517" Text="300" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Max Upload Filesize (in MB)" />
+                <TextBox x:Name="PhpMaxUploadFilesizeMb" Width="517" Text="64" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Max Memory Limit (in MB) (must be at least 3 times the max upload size)" />
+                <TextBox x:Name="PhpMaxMemoryLimitMb" Width="278" Text="192" />
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical">
+            <Label FontWeight="Bold">Email relay:</Label>
+            <DataGrid Name="EmailRelay" ItemsSource="{Binding EmailAccounts}" AutoGenerateColumns="False" SelectionMode="Single" SelectionChanged="EmailRelay_OnSelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="DefaultEmail" Binding="{Binding DefaultEmail}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Hostname" Binding="{Binding Hostname}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Port" Binding="{Binding Port}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="User" Binding="{Binding User}" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Default Email" />
+                <TextBox x:Name="EmailRelayDefaultEmail" Width="230" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Host Name" />
+                <TextBox x:Name="EmailRelayHostname" Width="240" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Port" />
+                <TextBox x:Name="EmailRelayPort" Width="279" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="User" />
+                <TextBox x:Name="EmailRelayUser" Width="277" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Password" />
+                <TextBox x:Name="EmailRelayPassword" Width="252" />
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical">
+            <Label FontWeight="Bold">App Service Plan:</Label>
+            <DataGrid Name="AppServicePlan" ItemsSource="{Binding AppServicePlans}" AutoGenerateColumns="False" SelectionMode="Single">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Resource Group" Binding="{Binding ResourceGroupName}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Region" Binding="{Binding RegionName}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Number of WebApps" Binding="{Binding NumberOfWebApps}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Max Instances" Binding="{Binding MaxInstances}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Height="20">
+        </StackPanel>
+
+        <Button Content="Create" Click="CreateClickAsync"/>
+
+        <Label Content="Status:" FontWeight="Bold" />
+        <ListBox x:Name="StatusList" />
+
+    </StackPanel>
+</Window>

@@ -1,0 +1,113 @@
+﻿<Window x:Class="wpf_app.window.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:wpf_app"
+        xmlns:model="clr-namespace:wpf_app.model"
+        mc:Ignorable="d"
+        Title="Foilen Azure Manager" Height="450" Width="1600" Loaded="InitDataAsync">
+    <Window.DataContext>
+        <model:ApplicationModel />
+    </Window.DataContext>
+
+    <Grid>
+        <TabControl>
+
+            <TabItem Header="Web Apps">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="24"  />
+                        <RowDefinition  />
+                    </Grid.RowDefinitions>
+
+                    <ToolBar >
+                        <Button Content="Create PHP" Click="PhpCreateWebApp"/>
+                        <Button Content="Refresh" Click="WebAppsRefreshAsync"/>
+                    </ToolBar>
+
+                    <DataGrid Name="WebApps" ItemsSource="{Binding WebApps}" AutoGenerateColumns="False" MouseDoubleClick="WebAppClone" Grid.Row="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Host Name" Binding="{Binding HostName}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Name" Binding="{Binding AzWebApp.Name}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Resource Group" Binding="{Binding AzWebApp.ResourceGroupName}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Region" Binding="{Binding AzWebApp.RegionName}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Docker" Binding="{Binding AzWebApp.SiteConfig.LinuxFxVersion}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Id" Binding="{Binding AzWebApp.Id}" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="DNS Zones">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="24"  />
+                        <RowDefinition  />
+                    </Grid.RowDefinitions>
+
+                    <ToolBar >
+                        <Button Content="Create" Click="DnsZoneCreate"/>
+                        <Button Content="Refresh" Click="DnsZonesRefreshAsync"/>
+                    </ToolBar>
+
+                    <DataGrid ItemsSource="{Binding DnsZones}" AutoGenerateColumns="False" Grid.Row="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Host Name" Binding="{Binding Name}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Resource Group" Binding="{Binding ResourceGroupName}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Region" Binding="{Binding RegionName}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Resource Groups">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="24"  />
+                        <RowDefinition  />
+                    </Grid.RowDefinitions>
+
+                    <ToolBar >
+                        <Button Content="Refresh" Click="ResourceGroupsRefreshAsync"/>
+                    </ToolBar>
+
+                    <DataGrid ItemsSource="{Binding ResourceGroups}" AutoGenerateColumns="False" Grid.Row="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Region" Binding="{Binding RegionName}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="App Service Plans">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="24"  />
+                        <RowDefinition  />
+                    </Grid.RowDefinitions>
+
+                    <ToolBar >
+                        <Button Content="Create" Click="AppServicePlansCreate"/>
+                        <Button Content="Refresh" Click="AppServicePlansRefreshAsync"/>
+                    </ToolBar>
+
+                    <DataGrid ItemsSource="{Binding AppServicePlans}" AutoGenerateColumns="False" Grid.Row="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Resource Group" Binding="{Binding ResourceGroupName}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Region" Binding="{Binding RegionName}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Number of WebApps" Binding="{Binding NumberOfWebApps}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Max Instances" Binding="{Binding MaxInstances}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</Window>
