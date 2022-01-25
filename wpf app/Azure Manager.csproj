@@ -6,6 +6,7 @@
     <RootNamespace>wpf_app</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <StartupObject>wpf_app.App</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
