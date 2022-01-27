@@ -5,35 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="PHP Create" Height="800" Width="1000" Loaded="InitDataAsync">
-    <StackPanel Orientation="Vertical">
+    <DockPanel>
 
-        <StackPanel Orientation="Horizontal">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <Label Content="Web App Name" />
             <TextBox x:Name="WebAppName" Width="229" />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <Label Content="Host Name" />
             <TextBox x:Name="HostName" Width="253" />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <Label Content="Resource Group Name" />
             <TextBox x:Name="ResourceGroupName" Width="193" />
             <ComboBox x:Name="ResourceGroups" Width="237" SelectionChanged="ResourceGroupName_OnSelectionChanged" />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <Label Content="PHP Version" />
             <ComboBox x:Name="PhpVersions" Width="247" />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <Label Content="Filesystem" FontWeight="Bold" />
             <RadioButton Name="FilesystemAppServiceStorage" GroupName="Filesystem" IsChecked="True" VerticalAlignment="Center">App Service Storage</RadioButton>
         </StackPanel>
 
-        <StackPanel Orientation="Vertical">
+        <StackPanel DockPanel.Dock="Top" Orientation="Vertical">
             <Label FontWeight="Bold">PHP Settings:</Label>
 
             <StackPanel Orientation="Horizontal">
@@ -50,7 +50,7 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Orientation="Vertical">
+        <StackPanel DockPanel.Dock="Top" Orientation="Vertical">
             <Label FontWeight="Bold">Email relay:</Label>
             <DataGrid Name="EmailRelay" ItemsSource="{Binding EmailAccounts}" AutoGenerateColumns="False" SelectionMode="Single" SelectionChanged="EmailRelay_OnSelectionChanged">
                 <DataGrid.Columns>
@@ -83,7 +83,7 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Orientation="Vertical">
+        <StackPanel DockPanel.Dock="Top" Orientation="Vertical">
             <Label FontWeight="Bold">App Service Plan:</Label>
             <DataGrid Name="AppServicePlan" ItemsSource="{Binding AppServicePlans}" AutoGenerateColumns="False" SelectionMode="Single">
                 <DataGrid.Columns>
@@ -97,13 +97,16 @@
             </DataGrid>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Height="20">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="20">
         </StackPanel>
 
-        <Button Content="Create" Click="CreateClickAsync"/>
+        <Button DockPanel.Dock="Top" Content="Create" Click="CreateClickAsync"/>
 
-        <Label Content="Status:" FontWeight="Bold" />
-        <ListBox x:Name="StatusList" />
+        <Label DockPanel.Dock="Top" Content="Status:" FontWeight="Bold" />
+        <ScrollViewer DockPanel.Dock="Bottom" >
+            <ListBox x:Name="StatusList" />
+        </ScrollViewer>
 
-    </StackPanel>
+    </DockPanel>
+
 </Window>

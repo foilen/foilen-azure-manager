@@ -3,8 +3,6 @@ using System.Text.Json;
 using core.AzureApi.model;
 using Microsoft.Azure.Management.AppService.Fluent;
 using Microsoft.Azure.Management.AppService.Fluent.Models;
-using Microsoft.Azure.Management.Dns.Fluent;
-using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
 
 namespace core.AzureApi
 {
@@ -129,13 +127,17 @@ namespace core.AzureApi
                             {
                                 var txtHostname = $"asuid.{errorEntity.Parameters[0]}";
                                 var txtValue = errorEntity.Parameters[1];
-                                AzApiClientHelper.PrintStatus(statusCollection,
-                                    $"[MISSING] Need to create a TXT record for {txtHostname} -> {txtValue}. Will try to create it");
+                                AzApiClientHelper.PrintStatus(statusCollection, $"[MISSING] Need to create a TXT record for {txtHostname} -> {txtValue}. Will try to create it");
 
                                 foundTxtRecord = true;
                                 await AzDnsZonesApiClient.SetTxtRecordAsync(txtHostname, txtValue, statusCollection);
 
-                                // TODO DNS - Wait until visible
+                                // DNS - Wait until visible
+                                if (!await DnsService.WaitForTxt(txtHostname, txtValue, TimeSpan.FromSeconds(5), 120 / 5, statusCollection))
+                                {
+                                    AzApiClientHelper.PrintStatus(statusCollection, $"[ERROR] Could not see the TXT record");
+                                    throw new Exception($"Could not create the webapp because could not see the TXT record for {txtHostname}");
+                                }
                             }
                         }
                     }
