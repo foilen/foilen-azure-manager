@@ -36,15 +36,15 @@ namespace wpf_app.window
                 HostName.Text = azWebAppWithHostname?.HostName;
                 ResourceGroupName.Text = azWebApp.ResourceGroupName;
 
-                EmailRelayDefaultEmail.Text = azWebApp.Settings["EMAIL_DEFAULT_FROM_ADDRESS"];
-                EmailRelayHostname.Text = azWebApp.Settings["EMAIL_HOSTNAME"];
-                EmailRelayPort.Text = azWebApp.Settings["EMAIL_PORT"];
-                EmailRelayUser.Text = azWebApp.Settings["EMAIL_USER"];
-                EmailRelayPassword.Text = azWebApp.Settings["EMAIL_PASSWORD"];
+                EmailRelayDefaultEmail.Text = azWebApp.Settings.GetValueOrDefault("EMAIL_DEFAULT_FROM_ADDRESS", "");
+                EmailRelayHostname.Text = azWebApp.Settings.GetValueOrDefault("EMAIL_HOSTNAME", "");
+                EmailRelayPort.Text = azWebApp.Settings.GetValueOrDefault("EMAIL_PORT", "");
+                EmailRelayUser.Text = azWebApp.Settings.GetValueOrDefault("EMAIL_USER", "");
+                EmailRelayPassword.Text = azWebApp.Settings.GetValueOrDefault("EMAIL_PASSWORD", "");
 
-                PhpMaxExecutionTimeSec.Text = azWebApp.Settings["PHP_MAX_EXECUTION_TIME_SEC"];
-                PhpMaxUploadFilesizeMb.Text = azWebApp.Settings["PHP_MAX_UPLOAD_FILESIZE_MB"];
-                PhpMaxMemoryLimitMb.Text = azWebApp.Settings["PHP_MAX_MEMORY_LIMIT_MB"];
+                PhpMaxExecutionTimeSec.Text = azWebApp.Settings.GetValueOrDefault("PHP_MAX_EXECUTION_TIME_SEC", "");
+                PhpMaxUploadFilesizeMb.Text = azWebApp.Settings.GetValueOrDefault("PHP_MAX_UPLOAD_FILESIZE_MB", "");
+                PhpMaxMemoryLimitMb.Text = azWebApp.Settings.GetValueOrDefault("PHP_MAX_MEMORY_LIMIT_MB", "");
             }
         }
 
