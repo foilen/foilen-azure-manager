@@ -2,14 +2,14 @@
 
 This application helps creating Web Application Services on Microsoft Azure. It also adds some features that are not in the default containers.
 
-# Global features
+## Global features
 
 - Lists all the Web Application Services you have access to.
 - Automatically updates the DNS for DNS Zones available in your Azure account.
 
-# Supported languages
+## Supported languages
 
-## PHP
+### PHP
 
 - Uses the Docker image https://github.com/foilen/az-docker-apache_php which contains:
   - a lot of PHP extensions installed
