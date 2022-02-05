@@ -36,7 +36,7 @@ public class AzGlobalStore : IAzGlobalStore
             }
         }
 
-        return emailAccounts;
+        return emailAccounts.Distinct().ToList();
     }
 
     public async Task<List<string>> RegionsUsedAndOthersAsync()
