@@ -1,13 +1,10 @@
-﻿using Microsoft.Azure.Management.AppService.Fluent.Models;
+﻿namespace core.AzureApi.model;
 
-namespace core.AzureApi.model
-{
-    public readonly record struct AzAppServicePlan(
-        string Id, // IHasId
-        string Name, // IHasName
-        string ResourceGroupName, // IHasResourceGroup
-        string Type, string RegionName, IReadOnlyDictionary<string, string> Tags, // IResource
+public readonly record struct AzAppServicePlan(
+    string Id, // IHasId
+    string Name, // IHasName
+    string ResourceGroupName, // IHasResourceGroup
+    string Type, string RegionName, IReadOnlyDictionary<string, string> Tags, // IResource
 
-        int NumberOfWebApps, int MaxInstances
-        );
-}
+    int NumberOfWebApps, int MaxInstances
+);

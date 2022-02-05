@@ -1,40 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Controls;
 
-namespace wpf_app
+namespace wpf_app;
+
+internal static class UiHelper
 {
-    internal static class UiHelper
+    internal static bool ValidateMandatory(ObservableCollection<string> statusItems, DataGrid dataGrid, string errorMessage)
     {
-        internal static bool ValidateMandatory(ObservableCollection<string> statusItems, DataGrid dataGrid, string errorMessage)
+        if (dataGrid.SelectedItem == null)
         {
-            if (dataGrid.SelectedItem == null)
-            {
-                statusItems.Add($"[VALIDATION ERROR] {errorMessage}");
-                return false;
-            }
-
-            return true;
+            statusItems.Add($"[VALIDATION ERROR] {errorMessage}");
+            return false;
         }
 
-        internal static bool ValidateMandatory(ObservableCollection<string> statusItems, string text, string errorMessage)
-        {
-            if (text.Length == 0)
-            {
-                statusItems.Add($"[VALIDATION ERROR] {errorMessage}");
-                return false;
-            }
+        return true;
+    }
 
-            return true;
+    internal static bool ValidateMandatory(ObservableCollection<string> statusItems, string text, string errorMessage)
+    {
+        if (text.Length == 0)
+        {
+            statusItems.Add($"[VALIDATION ERROR] {errorMessage}");
+            return false;
         }
 
-        internal static bool ValidateMandatory(ObservableCollection<string> statusItems, TextBox textBox, string errorMessage)
-        {
-            return ValidateMandatory(statusItems, textBox.Text, errorMessage);
-        }
+        return true;
+    }
+
+    internal static bool ValidateMandatory(ObservableCollection<string> statusItems, TextBox textBox, string errorMessage)
+    {
+        return ValidateMandatory(statusItems, textBox.Text, errorMessage);
     }
 }

@@ -54,10 +54,10 @@
             <Label FontWeight="Bold">Email relay:</Label>
             <DataGrid Name="EmailRelay" ItemsSource="{Binding EmailAccounts}" AutoGenerateColumns="False" SelectionMode="Single" SelectionChanged="EmailRelay_OnSelectionChanged">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="DefaultEmail" Binding="{Binding DefaultEmail}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Hostname" Binding="{Binding Hostname}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Port" Binding="{Binding Port}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="User" Binding="{Binding User}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="DefaultEmail" Binding="{Binding DefaultEmail}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Hostname" Binding="{Binding Hostname}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Port" Binding="{Binding Port}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="User" Binding="{Binding User}" IsReadOnly="True" />
                 </DataGrid.Columns>
             </DataGrid>
 
@@ -87,12 +87,12 @@
             <Label FontWeight="Bold">App Service Plan:</Label>
             <DataGrid Name="AppServicePlan" ItemsSource="{Binding AppServicePlans}" AutoGenerateColumns="False" SelectionMode="Single">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Resource Group" Binding="{Binding ResourceGroupName}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Region" Binding="{Binding RegionName}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Number of WebApps" Binding="{Binding NumberOfWebApps}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Max Instances" Binding="{Binding MaxInstances}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Resource Group" Binding="{Binding ResourceGroupName}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Region" Binding="{Binding RegionName}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Number of WebApps" Binding="{Binding NumberOfWebApps}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Max Instances" Binding="{Binding MaxInstances}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" />
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
@@ -100,10 +100,10 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="20">
         </StackPanel>
 
-        <Button DockPanel.Dock="Top" Content="Create" Click="CreateClickAsync"/>
+        <Button DockPanel.Dock="Top" Content="Create" Click="CreateClickAsync" />
 
         <Label DockPanel.Dock="Top" Content="Status:" FontWeight="Bold" />
-        <ScrollViewer DockPanel.Dock="Bottom" >
+        <ScrollViewer DockPanel.Dock="Bottom">
             <ListBox x:Name="StatusList" />
         </ScrollViewer>
 

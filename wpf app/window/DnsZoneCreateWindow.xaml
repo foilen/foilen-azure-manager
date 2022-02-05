@@ -28,7 +28,7 @@
         <StackPanel Orientation="Horizontal" Height="20">
         </StackPanel>
 
-        <Button Content="Create" Click="CreateClickAsync"/>
+        <Button Content="Create" Click="CreateClickAsync" />
 
         <Label Content="Status:" />
         <ListBox x:Name="StatusList" />
