@@ -58,7 +58,12 @@ public class AzWebAppsApiClient : IAzWebAppsApiClient
                     var cnameValue = newWebApp.DefaultHostName;
                     await _azDnsZonesApiClient.SetCnameRecordAsync(hostName, cnameValue, statusCollection);
                     AzApiClientHelper.PrintStatus(statusCollection, "[OK] DNS Entry creation completed");
-                    // TODO DNS - Wait until visible
+                    // DNS - Wait until visible
+                    if (!await _dnsService.WaitForCnameAsync(hostName, cnameValue, TimeSpan.FromSeconds(5), 120 / 5, statusCollection))
+                    {
+                        AzApiClientHelper.PrintStatus(statusCollection, $"[ERROR] Could not see the CNAME record");
+                        return;
+                    }
                 }
                 catch (Exception ex)
                 {

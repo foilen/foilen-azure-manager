@@ -86,6 +86,7 @@ public partial class PhpCreateWindow : Window
 
         settings["DOCKER_REGISTRY_SERVER_URL"] = "https://index.docker.io/v1";
 
+        // TODO Filesystem - Support Azure Files
         if (FilesystemAppServiceStorage.IsChecked == true)
         {
             settings["WEBSITES_ENABLE_APP_SERVICE_STORAGE"] = "true";
