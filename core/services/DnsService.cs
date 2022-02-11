@@ -58,7 +58,7 @@ public class DnsService : IDnsService
     }
 
     public async Task<bool> WaitForAAsync(string hostname, List<string> expectedValues, TimeSpan waitBetweenRetries, int maxRetries,
-        Collection<string>? statusCollection = null)
+        IList<string>? statusCollection = null)
     {
         while (maxRetries > 0)
         {
@@ -90,7 +90,7 @@ public class DnsService : IDnsService
 
     public async Task<bool> WaitForCnameAsync(string hostname, string expectedValue, 
         TimeSpan waitBetweenRetries, int maxRetries,
-        Collection<string>? statusCollection = null)
+        IList<string>? statusCollection = null)
     {
         expectedValue += ".";
         
@@ -115,7 +115,7 @@ public class DnsService : IDnsService
 
     public async Task<bool> WaitForTxtAsync(string hostname, string expectedValue, 
         TimeSpan waitBetweenRetries, int maxRetries, 
-        Collection<string>? statusCollection = null)
+        IList<string>? statusCollection = null)
     {
         while (maxRetries > 0)
         {

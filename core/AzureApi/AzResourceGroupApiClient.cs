@@ -17,7 +17,7 @@ public class AzResourceGroupApiClient : IAzResourceGroupApiClient
         _profileManager = profileManager;
     }
 
-    public async Task CreateResourceGroup(string resourceGroupName, Region region, Collection<string>? statusCollection = null)
+    public async Task CreateResourceGroup(string resourceGroupName, Region region, IList<string>? statusCollection = null)
     {
         AzApiClientHelper.PrintStatus(statusCollection, $"Check if the resource group {resourceGroupName} exists");
         var resourceGroupExists = await _azLoginClient.GetAzure().ResourceGroups

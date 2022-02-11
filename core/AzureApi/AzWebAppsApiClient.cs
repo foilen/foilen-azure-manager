@@ -22,7 +22,8 @@ public class AzWebAppsApiClient : IAzWebAppsApiClient
         _profileManager = profileManager;
     }
 
-    public async Task CreateWebApp(string webAppName, string dockerImageAndTag, string hostName, string resourceGroupName, string appServicePlanId, Dictionary<string, string> settings, Collection<string>? statusCollection = null)
+    // TODO CreateWebApp - Support many hostnames
+    public async Task CreateWebApp(string webAppName, string dockerImageAndTag, string hostName, string resourceGroupName, string appServicePlanId, Dictionary<string, string> settings, IList<string>? statusCollection = null)
     {
         var retriesLeft = 2;
         while (retriesLeft > 0)
@@ -248,7 +249,7 @@ public class AzWebAppsApiClient : IAzWebAppsApiClient
         return items;
     }
 
-    private static AzWebApp ToAzWebApp(IWebApp webApp, Dictionary<String, String> settings)
+    private static AzWebApp ToAzWebApp(IWebApp webApp, Dictionary<string, string> settings)
     {
         return new AzWebApp()
         {

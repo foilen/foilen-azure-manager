@@ -17,7 +17,7 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
     }
 
     public async Task CreateDnsZone(string hostName, string resourceGroupName,
-        Collection<string>? statusCollection = null)
+        IList<string>? statusCollection = null)
     {
         AzApiClientHelper.PrintStatus(statusCollection,
             $"Create the DNS Zone {hostName} in existing resource group {resourceGroupName}");
@@ -34,7 +34,7 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
     }
 
     public async Task<List<AzDnsZone>> ListDnsZonesAsync(bool forceRefresh = false,
-        Collection<string>? statusCollection = null)
+        IList<string>? statusCollection = null)
     {
         // Get from cache if available
         if (!forceRefresh)
@@ -68,7 +68,7 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
     }
 
     public async Task SetARecordAsync(string hostname, IList<string> values,
-        Collection<string>? statusCollection = null)
+        IList<string>? statusCollection = null)
     {
         // Find the DnsZone for that hostname
         var azDnsZone = await FindDnsZoneForHostAsync(hostname, statusCollection);
@@ -100,7 +100,7 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
         }
     }
 
-    public async Task SetCnameRecordAsync(string hostname, string value, Collection<string>? statusCollection = null)
+    public async Task SetCnameRecordAsync(string hostname, string value, IList<string>? statusCollection = null)
     {
         // Find the DnsZone for that hostname
         var azDnsZone = await FindDnsZoneForHostAsync(hostname, statusCollection);
@@ -125,7 +125,7 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
             .ApplyAsync();
     }
 
-    public async Task SetTxtRecordAsync(string hostname, string value, Collection<string>? statusCollection = null)
+    public async Task SetTxtRecordAsync(string hostname, string value, IList<string>? statusCollection = null)
     {
         // Find the DnsZone for that hostname
         var azDnsZone = await FindDnsZoneForHostAsync(hostname, statusCollection);
@@ -150,7 +150,7 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
             .ApplyAsync();
     }
 
-    public async Task<AzDnsZone> FindDnsZoneForHostAsync(string hostname, Collection<string>? statusCollection = null)
+    public async Task<AzDnsZone> FindDnsZoneForHostAsync(string hostname, IList<string>? statusCollection = null)
     {
         if (hostname.Length == 0)
         {

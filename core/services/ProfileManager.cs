@@ -78,7 +78,7 @@ public class ProfileManager : IProfileManager
         return items;
     }
 
-    public void SaveToJsonFolder<T>(string folderName, List<T> items, Func<T, string> itemFileName)
+    public void SaveToJsonFolder<T>(string folderName, IList<T> items, Func<T, string> itemFileName)
     {
         var basePath = GetProfileFilePath(folderName);
         if (Directory.Exists(basePath))

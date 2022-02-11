@@ -6,7 +6,7 @@ namespace core.AzureApi;
 
 public interface IAzResourceGroupApiClient
 {
-    Task CreateResourceGroup(string resourceGroupName, Region region, Collection<string>? statusCollection = null);
+    Task CreateResourceGroup(string resourceGroupName, Region region, IList<string>? statusCollection = null);
     Task<List<AzResourceGroup>> ListResourceGroupsAsync(bool forceRefresh = false);
     Task<AzResourceGroup?> ResourceGroupByNameAsync(string resourceGroupName);
 }
