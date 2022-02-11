@@ -7,6 +7,8 @@ public interface IAzDnsZonesApiClient
 {
     Task CreateDnsZone(string hostName, string resourceGroupName, Collection<string>? statusCollection = null);
     Task<List<AzDnsZone>> ListDnsZonesAsync(bool forceRefresh = false, Collection<string>? statusCollection = null);
+    Task SetARecordAsync(string hostname, IList<string> values, Collection<string>? statusCollection = null);
     Task SetCnameRecordAsync(string hostname, string value, Collection<string>? statusCollection = null);
     Task SetTxtRecordAsync(string hostname, string value, Collection<string>? statusCollection = null);
+    Task<AzDnsZone> FindDnsZoneForHostAsync(string hostname, Collection<string>? statusCollection = null);
 }

@@ -35,34 +35,71 @@ public class AzWebAppsApiClient : IAzWebAppsApiClient
             AzApiClientHelper.PrintStatus(statusCollection, $"Create the WebApp {webAppName} with hostname {hostName} in existing resource group {resourceGroupName}");
             try
             {
-                var newWebApp = await _azLoginClient.GetAzure().WebApps
+                var dnsZone = await _azDnsZonesApiClient.FindDnsZoneForHostAsync(hostName);
+
+                var webAppCreate = _azLoginClient.GetAzure().WebApps
                     .Define(webAppName)
                     .WithExistingLinuxPlan(appServicePlan)
                     .WithExistingResourceGroup(resourceGroupName)
                     .WithPublicDockerHubImage(dockerImageAndTag)
                     .WithAppSettings(settings)
-                    .WithHttpsOnly(true)
-                    .WithThirdPartyHostnameBinding("foilen-lab.me", hostName)
-                    .CreateAsync();
+                    .WithHttpsOnly(true);
+
+                if (dnsZone.Name == hostName)
+                {
+                    webAppCreate = webAppCreate.DefineHostnameBinding()
+                        .WithThirdPartyDomain(dnsZone.Name)
+                        .WithSubDomain(hostName)
+                        .WithDnsRecordType(CustomHostNameDnsRecordType.A)
+                        .Attach();
+                }
+                else
+                {
+                    webAppCreate = webAppCreate.DefineHostnameBinding()
+                        .WithThirdPartyDomain(dnsZone.Name)
+                        .WithSubDomain(hostName)
+                        .WithDnsRecordType(CustomHostNameDnsRecordType.CName)
+                        .Attach();
+                }
+
+                var newWebApp = await webAppCreate.CreateAsync();
 
                 // Cache newWebApp
                 _profileManager.SaveNewToJsonFolder("cache-webapps", ToAzWebApp(newWebApp, settings),
                     item => item.Id.Replace('/', '_')
                 );
 
-
                 // Create DNS Entry
                 try
                 {
-                    // TODO Create Webapp - Handle root case (cannot be CNAME; must be A)
-                    var cnameValue = newWebApp.DefaultHostName;
-                    await _azDnsZonesApiClient.SetCnameRecordAsync(hostName, cnameValue, statusCollection);
-                    AzApiClientHelper.PrintStatus(statusCollection, "[OK] DNS Entry creation completed");
-                    // DNS - Wait until visible
-                    if (!await _dnsService.WaitForCnameAsync(hostName, cnameValue, TimeSpan.FromSeconds(5), 120 / 5, statusCollection))
+                    if (dnsZone.Name == hostName)
                     {
-                        AzApiClientHelper.PrintStatus(statusCollection, $"[ERROR] Could not see the CNAME record");
-                        return;
+                        // Root entry (cannot be CNAME; must be A)
+                        var cnameValue = newWebApp.DefaultHostName;
+                        var ips = await _dnsService.GetAAsync(cnameValue);
+                        await _azDnsZonesApiClient.SetARecordAsync(hostName, ips, statusCollection);
+                        AzApiClientHelper.PrintStatus(statusCollection, "[OK] DNS Entry creation completed");
+                        // DNS - Wait until visible
+                        if (!await _dnsService.WaitForAAsync(hostName, ips, TimeSpan.FromSeconds(5), 120 / 5,
+                                statusCollection))
+                        {
+                            AzApiClientHelper.PrintStatus(statusCollection, $"[ERROR] Could not see the A record");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        // Subdomain (can be CNAME)
+                        var cnameValue = newWebApp.DefaultHostName;
+                        await _azDnsZonesApiClient.SetCnameRecordAsync(hostName, cnameValue, statusCollection);
+                        AzApiClientHelper.PrintStatus(statusCollection, "[OK] DNS Entry creation completed");
+                        // DNS - Wait until visible
+                        if (!await _dnsService.WaitForCnameAsync(hostName, cnameValue, TimeSpan.FromSeconds(5), 120 / 5,
+                                statusCollection))
+                        {
+                            AzApiClientHelper.PrintStatus(statusCollection, $"[ERROR] Could not see the CNAME record");
+                            return;
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -80,7 +117,7 @@ public class AzWebAppsApiClient : IAzWebAppsApiClient
                         .WithRegion(newWebApp.Region)
                         .WithExistingResourceGroup(newWebApp.ResourceGroupName)
                         .WithExistingCertificateOrder(null);
-                    var innerCertificate = ((IAppServiceCertificate) certificateDefinition).Inner;
+                    var innerCertificate = ((IAppServiceCertificate)certificateDefinition).Inner;
                     innerCertificate.ServerFarmId = newWebApp.AppServicePlanId;
                     innerCertificate.CanonicalName = hostName;
                     innerCertificate.Password = "";
@@ -224,9 +261,9 @@ public class AzWebAppsApiClient : IAzWebAppsApiClient
             Tags = webApp.Tags,
 
             State = webApp.Inner.State,
-            HostNames = (List<string>) webApp.Inner.HostNames,
+            HostNames = (List<string>)webApp.Inner.HostNames,
             Enabled = webApp.Inner.Enabled,
-            HostNameSslStates = (List<HostNameSslState>) webApp.Inner.HostNameSslStates,
+            HostNameSslStates = (List<HostNameSslState>)webApp.Inner.HostNameSslStates,
             SiteConfig = webApp.Inner.SiteConfig,
             OutboundIpAddresses = webApp.Inner.OutboundIpAddresses,
             HttpsOnly = webApp.Inner.HttpsOnly,

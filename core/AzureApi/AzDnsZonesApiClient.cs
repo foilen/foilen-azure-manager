@@ -16,7 +16,8 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
         _profileManager = profileManager;
     }
 
-    public async Task CreateDnsZone(string hostName, string resourceGroupName, Collection<string>? statusCollection = null)
+    public async Task CreateDnsZone(string hostName, string resourceGroupName,
+        Collection<string>? statusCollection = null)
     {
         AzApiClientHelper.PrintStatus(statusCollection,
             $"Create the DNS Zone {hostName} in existing resource group {resourceGroupName}");
@@ -32,7 +33,8 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
         );
     }
 
-    public async Task<List<AzDnsZone>> ListDnsZonesAsync(bool forceRefresh = false, Collection<string>? statusCollection = null)
+    public async Task<List<AzDnsZone>> ListDnsZonesAsync(bool forceRefresh = false,
+        Collection<string>? statusCollection = null)
     {
         // Get from cache if available
         if (!forceRefresh)
@@ -65,6 +67,39 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
         return items;
     }
 
+    public async Task SetARecordAsync(string hostname, IList<string> values,
+        Collection<string>? statusCollection = null)
+    {
+        // Find the DnsZone for that hostname
+        var azDnsZone = await FindDnsZoneForHostAsync(hostname, statusCollection);
+
+        // Get the Dns Zone
+        AzApiClientHelper.PrintStatus(statusCollection, $"Get DnsZone {azDnsZone.Name}");
+        var dnsZone = await _azLoginClient.GetAzure().DnsZones
+            .GetByIdAsync(azDnsZone.Id);
+
+        // Delete and add A
+        var subDomain = hostname== azDnsZone.Name?"@": hostname.Substring(0, hostname.Length - 1 - azDnsZone.Name.Length);
+        AzApiClientHelper.PrintStatus(statusCollection,
+            $"Set the A entries {subDomain} -> {string.Join(", ", values)} in DnsZone {azDnsZone.Name}");
+        await dnsZone.Update()
+            .WithoutARecordSet(subDomain)
+            .ApplyAsync();
+        if (values.Count > 0)
+        {
+            var update = dnsZone.Update()
+                .DefineARecordSet(subDomain)
+                .WithIPv4Address(values[0]);
+            for (var i = 1; i < values.Count; ++i)
+            {
+                update = update.WithIPv4Address(values[i]);
+            }
+            await update.WithTimeToLive(300)
+                .Attach()
+                .ApplyAsync();
+        }
+    }
+
     public async Task SetCnameRecordAsync(string hostname, string value, Collection<string>? statusCollection = null)
     {
         // Find the DnsZone for that hostname
@@ -75,9 +110,10 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
         var dnsZone = await _azLoginClient.GetAzure().DnsZones
             .GetByIdAsync(azDnsZone.Id);
 
-        // Delete and add TXT
+        // Delete and add Cname
         var subDomain = hostname.Substring(0, hostname.Length - 1 - azDnsZone.Name.Length);
-        AzApiClientHelper.PrintStatus(statusCollection, $"Set the CNAME entry {subDomain} -> {value} in DnsZone {azDnsZone.Name}");
+        AzApiClientHelper.PrintStatus(statusCollection,
+            $"Set the CNAME entry {subDomain} -> {value} in DnsZone {azDnsZone.Name}");
         await dnsZone.Update()
             .WithoutCNameRecordSet(subDomain)
             .ApplyAsync();
@@ -101,7 +137,8 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
 
         // Delete and add TXT
         var subDomain = hostname.Substring(0, hostname.Length - 1 - azDnsZone.Name.Length);
-        AzApiClientHelper.PrintStatus(statusCollection, $"Set the TXT entry {subDomain} -> {value} in DnsZone {azDnsZone.Name}");
+        AzApiClientHelper.PrintStatus(statusCollection,
+            $"Set the TXT entry {subDomain} -> {value} in DnsZone {azDnsZone.Name}");
         await dnsZone.Update()
             .WithoutTxtRecordSet(subDomain)
             .ApplyAsync();
@@ -113,7 +150,7 @@ public class AzDnsZonesApiClient : IAzDnsZonesApiClient
             .ApplyAsync();
     }
 
-    private async Task<AzDnsZone> FindDnsZoneForHostAsync(string hostname, Collection<string>? statusCollection = null)
+    public async Task<AzDnsZone> FindDnsZoneForHostAsync(string hostname, Collection<string>? statusCollection = null)
     {
         if (hostname.Length == 0)
         {
