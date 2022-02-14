@@ -13,8 +13,8 @@
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <Label Content="Host Name" />
-            <TextBox x:Name="HostName" Width="253" />
+            <Label Content="Host Names (comma separated)" />
+            <TextBox x:Name="HostNames" Width="700" />
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">

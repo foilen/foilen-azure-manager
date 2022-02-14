@@ -9,7 +9,7 @@ public class AzWebAppsApiClientMock : IAzWebAppsApiClient
 {
     public List<AzWebApp> AzWebApps = new List<AzWebApp>();
 
-    public Task CreateWebApp(string webAppName, string dockerImageAndTag, string hostName, string resourceGroupName,
+    public Task CreateWebApp(string webAppName, string dockerImageAndTag, IList<string> hostNames, string resourceGroupName,
         string appServicePlanId, Dictionary<string, string> settings, IList<string>? statusCollection = null)
     {
         throw new System.NotImplementedException();

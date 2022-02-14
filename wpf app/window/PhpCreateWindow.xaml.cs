@@ -34,7 +34,7 @@ public partial class PhpCreateWindow : Window
         {
             var azWebApp = azWebAppWithHostname.Value.AzWebApp;
             WebAppName.Text = azWebApp.Name;
-            HostName.Text = azWebAppWithHostname?.HostName;
+            HostNames.Text = azWebAppWithHostname?.HostName;
             ResourceGroupName.Text = azWebApp.ResourceGroupName;
 
             EmailRelayDefaultEmail.Text = azWebApp.Settings.GetValueOrDefault("EMAIL_DEFAULT_FROM_ADDRESS", "");
@@ -72,7 +72,7 @@ public partial class PhpCreateWindow : Window
         // Validations
         var isSuccess = true;
         isSuccess = UiHelper.ValidateMandatory(statusItems, WebAppName, "You must provide a web app name") && isSuccess;
-        isSuccess = UiHelper.ValidateMandatory(statusItems, HostName, "You must provide an host name") && isSuccess;
+        isSuccess = UiHelper.ValidateMandatory(statusItems, HostNames, "You must provide an host name") && isSuccess;
         isSuccess = UiHelper.ValidateMandatory(statusItems, ResourceGroupName, "You must provide a resource group name") && isSuccess;
         isSuccess = UiHelper.ValidateMandatory(statusItems, AppServicePlan, "You must select an app service plan") && isSuccess;
         if (!isSuccess)
@@ -106,7 +106,7 @@ public partial class PhpCreateWindow : Window
         try
         {
             await _azWebAppsApiClient.CreateWebApp(WebAppName.Text, (string)PhpVersions.SelectionBoxItem,
-                HostName.Text, ResourceGroupName.Text, ((AzAppServicePlan)AppServicePlan.SelectedItem).Id,
+                HostNames.Text.Split(','), ResourceGroupName.Text, ((AzAppServicePlan)AppServicePlan.SelectedItem).Id,
                 settings, statusItems);
             statusItems.Add("[OK] Webapp creation completed");
         }
