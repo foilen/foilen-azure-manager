@@ -42,7 +42,24 @@ public partial class MainWindow : Window
 
     private async void InitDataAsync(object sender, RoutedEventArgs e)
     {
-        await _azLoginClient.LogInIfNeededAsync();
+        try
+        {
+            await _azLoginClient.LogInIfNeededAsync();
+        }
+        catch (AzNotInstalledException)
+        {
+            MessageBox.Show(
+                "You need to install Azure CLI and restart this application. Your browser will start now with the right page to get it");
+
+            System.Diagnostics.Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://aka.ms/installazurecliwindows",
+                UseShellExecute = true
+            });
+
+            this.Close();
+            return;
+        }
 
         await _applicationModel.RefreshAppServicePlansAsync(false);
         await _applicationModel.RefreshDnsZonesAsync(false);
@@ -90,7 +107,7 @@ public partial class MainWindow : Window
 
     private void WebAppClone(object sender, MouseButtonEventArgs e)
     {
-        var item = (AzWebAppWithHostname) WebApps.SelectedItem;
+        var item = (AzWebAppWithHostname)WebApps.SelectedItem;
 
         // TODO WebAppClone - Support other languages
         new PhpCreateWindow(_applicationModel, _azGlobalStore, _azWebAppsApiClient, item).Show();
