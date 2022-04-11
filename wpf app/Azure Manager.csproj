@@ -13,4 +13,17 @@
     <ProjectReference Include="..\core\core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="window\StorageAccountCreateWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="window\StorageAccountCreateWindow.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>StorageAccountCreateWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

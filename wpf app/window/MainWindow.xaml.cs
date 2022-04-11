@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using core;
 using core.AzureApi;
 using core.services;
 using wpf_app.model;
@@ -11,7 +10,7 @@ namespace wpf_app.window;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow
 {
     private readonly ApplicationModel _applicationModel;
     private readonly IAzAppServicePlansApiClient _azAppServicePlansApiClient;
@@ -20,6 +19,7 @@ public partial class MainWindow : Window
     private readonly IAzLoginClient _azLoginClient;
     private readonly IAzGlobalStore _azGlobalStore;
     private readonly IAzResourceGroupApiClient _azResourceGroupApiClient;
+    private readonly IAzStorageApiClient _azStorageApiClient;
     private readonly IAzWebAppsApiClient _azWebAppsApiClient;
     private readonly IDnsService _dnsService;
     private readonly IProfileManager _profileManager;
@@ -32,10 +32,13 @@ public partial class MainWindow : Window
         _azDnsZonesApiClient = new AzDnsZonesApiClient(_azLoginClient, _profileManager);
         _azLocationApiClient = new AzLocationApiClient(_azLoginClient, _profileManager);
         _azAppServicePlansApiClient = new AzAppServicePlansApiClient(_azLoginClient, _profileManager);
-        _azWebAppsApiClient = new AzWebAppsApiClient(_azDnsZonesApiClient, _azLoginClient, _dnsService, _profileManager);
+        _azWebAppsApiClient =
+            new AzWebAppsApiClient(_azDnsZonesApiClient, _azLoginClient, _dnsService, _profileManager);
         _azGlobalStore = new AzGlobalStore(_azDnsZonesApiClient, _azLocationApiClient, _azWebAppsApiClient);
         _azResourceGroupApiClient = new AzResourceGroupApiClient(_azLoginClient, _profileManager);
-        _applicationModel = new ApplicationModel(_azAppServicePlansApiClient, _azDnsZonesApiClient, _azGlobalStore, _azResourceGroupApiClient, _azWebAppsApiClient);
+        _azStorageApiClient = new AzStorageApiClient(_azLoginClient, _profileManager);
+        _applicationModel = new ApplicationModel(_azAppServicePlansApiClient, _azDnsZonesApiClient, _azGlobalStore,
+            _azResourceGroupApiClient, _azStorageApiClient, _azWebAppsApiClient);
         DataContext = _applicationModel;
         InitializeComponent();
     }
@@ -51,7 +54,7 @@ public partial class MainWindow : Window
             MessageBox.Show(
                 "You need to install Azure CLI and restart this application. Your browser will start now with the right page to get it");
 
-            System.Diagnostics.Process.Start(new ProcessStartInfo
+            Process.Start(new ProcessStartInfo
             {
                 FileName = "https://aka.ms/installazurecliwindows",
                 UseShellExecute = true
@@ -64,13 +67,15 @@ public partial class MainWindow : Window
         await _applicationModel.RefreshAppServicePlansAsync(false);
         await _applicationModel.RefreshDnsZonesAsync(false);
         await _applicationModel.RefreshResourceGroupsAsync(false);
+        await _applicationModel.RefreshStorageAccountsAsync(false);
         await _applicationModel.RefreshWebAppsAsync(false);
     }
 
     // DNS Zone
     private void DnsZoneCreate(object sender, RoutedEventArgs e)
     {
-        new DnsZoneCreateWindow(_applicationModel, _azDnsZonesApiClient, _azGlobalStore, _azLocationApiClient, _azResourceGroupApiClient).Show();
+        new DnsZoneCreateWindow(_applicationModel, _azDnsZonesApiClient, _azGlobalStore, _azLocationApiClient,
+            _azResourceGroupApiClient).Show();
     }
 
     private async void DnsZonesRefreshAsync(object sender, RoutedEventArgs e)
@@ -87,7 +92,7 @@ public partial class MainWindow : Window
     // App Service Plan
     private void AppServicePlansCreate(object sender, RoutedEventArgs e)
     {
-        System.Diagnostics.Process.Start(new ProcessStartInfo
+        Process.Start(new ProcessStartInfo
         {
             FileName = "https://portal.azure.com/#create/Microsoft.AppServicePlanCreate",
             UseShellExecute = true
@@ -99,6 +104,18 @@ public partial class MainWindow : Window
         await _applicationModel.RefreshAppServicePlansAsync(true);
     }
 
+    // Storage Account
+    private void StorageAccountCreate(object sender, RoutedEventArgs e)
+    {
+        new StorageAccountCreateWindow(_applicationModel, _azStorageApiClient, _azGlobalStore,
+            _azLocationApiClient, _azResourceGroupApiClient).Show();
+    }
+
+    private async void StorageAccountsRefreshAsync(object sender, RoutedEventArgs e)
+    {
+        await _applicationModel.RefreshStorageAccountsAsync(true);
+    }
+
     // Web Apps
     private async void WebAppsRefreshAsync(object sender, RoutedEventArgs e)
     {
@@ -107,7 +124,7 @@ public partial class MainWindow : Window
 
     private void WebAppClone(object sender, MouseButtonEventArgs e)
     {
-        var item = (AzWebAppWithHostname)WebApps.SelectedItem;
+        var item = (AzWebAppWithHostname) WebApps.SelectedItem;
 
         // TODO WebAppClone - Support other languages
         new PhpCreateWindow(_applicationModel, _azGlobalStore, _azWebAppsApiClient, item).Show();

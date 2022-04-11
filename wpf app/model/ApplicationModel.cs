@@ -13,14 +13,21 @@ public class ApplicationModel : INotifyPropertyChanged
     private readonly IAzDnsZonesApiClient _azDnsZonesApiClient;
     private readonly IAzGlobalStore _azGlobalStore;
     private readonly IAzResourceGroupApiClient _azResourceGroupApiClient;
+    private readonly IAzStorageApiClient _azStorageApiClient;
     private readonly IAzWebAppsApiClient _azWebAppsApiClient;
-    
-    public ApplicationModel(IAzAppServicePlansApiClient azAppServicePlansApiClient, IAzDnsZonesApiClient azDnsZonesApiClient, IAzGlobalStore azGlobalStore, IAzResourceGroupApiClient azResourceGroupApiClient, IAzWebAppsApiClient azWebAppsApiClient)
+
+    public ApplicationModel(IAzAppServicePlansApiClient azAppServicePlansApiClient,
+        IAzDnsZonesApiClient azDnsZonesApiClient,
+        IAzGlobalStore azGlobalStore,
+        IAzResourceGroupApiClient azResourceGroupApiClient,
+        IAzStorageApiClient azStorageApiClient,
+        IAzWebAppsApiClient azWebAppsApiClient)
     {
         _azAppServicePlansApiClient = azAppServicePlansApiClient;
         _azDnsZonesApiClient = azDnsZonesApiClient;
         _azGlobalStore = azGlobalStore;
         _azResourceGroupApiClient = azResourceGroupApiClient;
+        _azStorageApiClient = azStorageApiClient;
         _azWebAppsApiClient = azWebAppsApiClient;
     }
 
@@ -35,6 +42,7 @@ public class ApplicationModel : INotifyPropertyChanged
     public ObservableCollection<AzDnsZone> DnsZones { get; } = new();
     public ObservableCollection<AzEmailAccount> EmailAccounts { get; } = new();
     public ObservableCollection<AzResourceGroup> ResourceGroups { get; } = new();
+    public ObservableCollection<AzStorageAccount> StorageAccounts { get; } = new();
     public ObservableCollection<AzWebAppWithHostname> WebApps { get; } = new();
 
     public async Task RefreshAppServicePlansAsync(bool forceRefresh)
@@ -61,6 +69,15 @@ public class ApplicationModel : INotifyPropertyChanged
         foreach (var item in await _azResourceGroupApiClient.ListResourceGroupsAsync(forceRefresh))
         {
             ResourceGroups.Add(item);
+        }
+    }
+
+    public async Task RefreshStorageAccountsAsync(bool forceRefresh)
+    {
+        StorageAccounts.Clear();
+        foreach (var item in await _azStorageApiClient.ListStorageAccountsAsync(forceRefresh))
+        {
+            StorageAccounts.Add(item);
         }
     }
 
